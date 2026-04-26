@@ -92,6 +92,29 @@
   * Normal ECG
   * Abnormal ECG
 
+
+## 📊 Results
+
+### 🔹 Raw ECG Signal and Filtered ECG Signal
+<p align="center">
+  <img src="media/raw_filtered_ecg.png" width="600">
+</p>
+
+### 🔹 R-Peak Detection
+<p align="center">
+  <img src="media/r_peaks_normal.png" width="600">
+</p>
+
+### 🔹 RR Interval Graph
+<p align="center">
+  <img src="media/rr_series_normal.png" width="600">
+</p>
+
+### 🔹 Poincaré Plot
+<p align="center">
+  <img src="media/poincare_normal.png" width="600">
+</p>
+
 ### Observations:
 * Filtered ECG improves signal clarity
 * Poincaré plots show variability patterns
