@@ -73,3 +73,74 @@
 ---
 
 ## 🧠 Block Diagram
+
+
+
+
+---
+
+## 📊 Results
+* Accurate R-peak detection achieved
+* Clear RR interval patterns observed
+* HRV features successfully extracted
+* System differentiates:
+  * Normal ECG
+  * Abnormal ECG
+
+### Observations:
+* Filtered ECG improves signal clarity
+* Poincaré plots show variability patterns
+* RR intervals indicate heart stability
+
+---
+
+## 🏁 Conclusion
+* The project provides an effective method for early cardiovascular disease detection.
+* HRV-based ECG analysis is:
+  * Reliable
+  * Non-invasive
+  * Cost-efficient
+
+### Achievements:
+* Accurate ECG signal processing
+* Efficient HRV feature extraction
+* Automated classification system
+* Doctor-style report generation
+
+---
+
+## 🔮 Future Scope
+* Integration of Machine Learning and Deep Learning
+* Real-time monitoring using wearable devices
+* Cloud-based healthcare systems
+* Mobile application development
+* Multi-parameter analysis (BP, SpO2)
+* Large-scale clinical validation
+
+---
+
+## 📚 References
+* PhysioNet ECG Database
+* MIT-BIH Arrhythmia Database
+* Research papers on HRV analysis
+
+---
+
+## 👨‍💻 Authors
+* Prashant Pattar
+* Chinmay Dhawale
+* Rakshita K
+* Soumya Katti
+
+---
+
+## 🛠️ Tools & Technologies
+* MATLAB / Python
+* NumPy, SciPy
+* Signal Processing Techniques
+* ECG Databases (PhysioNet)
+
+---
+
+## ⭐ Support
+* If you like this project, give it a ⭐ on GitHub!
