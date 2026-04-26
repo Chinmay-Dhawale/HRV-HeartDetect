@@ -1,0 +1,182 @@
+%% ==============================================================
+%  HRV & PEAK ANALYSIS FOR ONE ECG CSV (MATLAB ONLINE)
+%
+%  INPUT CSV FORMAT (same as your files):
+%     Time_sec , MLII , V1
+%
+%  OUTPUT:
+%   - Raw ECG plot
+%   - Filtered ECG plot (0.5–40 Hz)
+%   - ECG with R-peaks
+%   - ECG with R + SCG(AO) + GCG(gJ) (estimated from ECG)
+%   - HRV parameters (AVNN, SDNN, RMSSD, pNN50, HR)
+%   - Simple "doctor-style" textual report (for project only)
+%
+%  HOW TO USE:
+%   1) Put this script and your CSV in the same folder.
+%   2) Set "filename" below to the CSV you want to analyse.
+% ==============================================================
+
+clear; clc; close all;
+
+%% ----------- USER SETTINGS -----------------------------------
+
+% 1) Choose which file to analyse (dataset OR live ECG)
+filename = '100_ecg_final.csv';   % <-- change to your file name
+
+% 2) Thresholds from your dataset (fill from your previous 6-person summary)
+%    Example values (change to your real ones from dataset code):
+thr_SDNN_low  = 30;   % ms   e.g. 0.6 * mean_SDNN
+thr_RMSSD_low = 25;   % ms   e.g. 0.6 * mean_RMSSD
+
+%% 1) READ CSV (Time_sec, MLII, V1)
+data = readtable(filename);
+
+if ~all(ismember({'Time_sec','MLII'}, data.Properties.VariableNames))
+    error('CSV must contain columns "Time_sec" and "MLII".');
+end
+
+t   = data.Time_sec(:);
+ecg = data.MLII(:);
+N   = length(ecg);
+
+% Estimate sampling frequency from time vector
+dt = mean(diff(t));
+Fs = 1/dt;
+fprintf('File: %s\n', filename);
+fprintf('Estimated Fs: %.2f Hz\n', Fs);
+
+%% 2) FILTER ECG (0.5–40 Hz)
+[b,a] = butter(4, [0.5 40]/(Fs/2), 'bandpass');
+ecg_f = filtfilt(b,a, ecg);
+
+%% 3) R-PEAK DETECTION
+minDist = round(0.3 * Fs);     % minimum 0.3 s between peaks
+thr     = 0.35 * max(ecg_f);   % initial threshold
+
+[pkR, locR] = findpeaks(ecg_f, ...
+    'MinPeakHeight',   thr, ...
+    'MinPeakDistance', minDist);
+
+% If too few peaks, lower threshold a bit
+if numel(locR) < 10
+    thr = 0.25 * max(ecg_f);
+    [pkR, locR] = findpeaks(ecg_f, ...
+        'MinPeakHeight',   thr, ...
+        'MinPeakDistance', minDist);
+end
+
+RR = diff(locR)/Fs;    % seconds
+NN = RR * 1000;        % ms
+
+%% 4) ESTIMATE SCG & GCG PEAKS FROM ECG (for project demo)
+% NOTE: These are NOT real SCG/GCG signals. We simply assume
+% mechanical events occur 60 ms (SCG) and 80 ms (GCG) after R-peak.
+
+delay_scg = round(0.06 * Fs);   % 60 ms
+delay_gcg = round(0.08 * Fs);   % 80 ms
+
+idx_scg = locR + delay_scg;
+idx_gcg = locR + delay_gcg;
+
+idx_scg(idx_scg > N) = [];
+idx_gcg(idx_gcg > N) = [];
+
+% Create simple synthetic SCG/GCG signals (impulses convolved with Gaussian)
+scg_imp = zeros(N,1); scg_imp(idx_scg) = 1;
+gcg_imp = zeros(N,1); gcg_imp(idx_gcg) = 1;
+
+g_scg = gausswin(round(0.04*Fs)); g_scg = g_scg/max(g_scg);  % 40 ms pulse
+g_gcg = gausswin(round(0.03*Fs)); g_gcg = g_gcg/max(g_gcg);  % 30 ms pulse
+
+scg = conv(scg_imp, g_scg, 'same');
+gcg = conv(gcg_imp, g_gcg, 'same');
+
+%% 5) HRV PARAMETERS
+hrv = compute_hrv_time(NN);
+HR  = 60 / mean(RR);
+
+fprintf('\n--- HRV PARAMETERS ---\n');
+fprintf('Beats detected : %d\n', numel(locR));
+fprintf('Heart Rate     : %.2f bpm\n', HR);
+fprintf('AVNN           : %.2f ms\n', hrv.AVNN);
+fprintf('SDNN           : %.2f ms\n', hrv.SDNN);
+fprintf('RMSSD          : %.2f ms\n', hrv.RMSSD);
+fprintf('pNN50          : %.2f %%\n', hrv.pNN50);
+
+%% 6) SIMPLE "DOCTOR-STYLE" INTERPRETATION  (PROJECT ONLY)
+if hrv.SDNN < thr_SDNN_low || hrv.RMSSD < thr_RMSSD_low
+    status = 'LOW HRV (reduced variability compared to your reference dataset)';
+else
+    status = 'NORMAL HRV (within reference range of your dataset)';
+end
+
+fprintf('\n--- PROJECT INTERPRETATION (NOT REAL DIAGNOSIS) ---\n');
+fprintf('Impression: %s\n', status);
+fprintf('Comment  : Use this result only for academic project, not for clinical decision.\n');
+
+%% 7) PLOTS
+
+% Limit display to first 10 seconds for clarity
+tWin = 10;
+idxWin = t <= tWin;
+
+% (a) Raw vs Filtered ECG
+figure('Name','Raw vs Filtered ECG','NumberTitle','off');
+subplot(2,1,1);
+plot(t(idxWin), ecg(idxWin));
+grid on; xlabel('Time (s)'); ylabel('Amplitude');
+title(['Raw ECG - ' filename]);
+
+subplot(2,1,2);
+plot(t(idxWin), ecg_f(idxWin));
+grid on; xlabel('Time (s)'); ylabel('Amplitude');
+title('Filtered ECG (0.5–40 Hz)');
+
+% (b) Filtered ECG with R-peaks
+figure('Name','ECG with R-peaks','NumberTitle','off');
+plot(t(idxWin), ecg_f(idxWin)); hold on;
+selR = (locR/Fs) <= tWin;
+plot(t(locR(selR)), ecg_f(locR(selR)), 'rv', 'MarkerFaceColor','r', 'MarkerSize',4);
+grid on; xlabel('Time (s)'); ylabel('Amplitude');
+title('Filtered ECG with R-peaks');
+
+% (c) ECG with R, SCG, GCG peaks (estimated)
+figure('Name','ECG with R, SCG, GCG peaks (estimated)','NumberTitle','off');
+plot(t(idxWin), ecg_f(idxWin)); hold on;
+plot(t(locR(selR)), ecg_f(locR(selR)), 'rv', 'MarkerFaceColor','r', 'MarkerSize',4);
+
+selSCG = (idx_scg/Fs) <= tWin;
+selGCG = (idx_gcg/Fs) <= tWin;
+plot(t(idx_scg(selSCG)), ecg_f(idx_scg(selSCG)), 'bo', 'MarkerSize',4);
+plot(t(idx_gcg(selGCG)), ecg_f(idx_gcg(selGCG)), 'gs', 'MarkerSize',4);
+
+legend('Filtered ECG','R-peaks','SCG AO (60 ms)','GCG gJ (80 ms)','Location','best');
+grid on; xlabel('Time (s)'); ylabel('Amplitude');
+title('ECG with Estimated Mechanical Peaks (for project demo)');
+
+% (d) RR series
+figure('Name','RR Interval Series','NumberTitle','off');
+stem(RR, '.'); grid on;
+xlabel('Beat index'); ylabel('RR (s)');
+title('RR Interval Time Series');
+
+% (e) Poincaré plot
+if numel(NN) > 2
+    figure('Name','Poincare Plot','NumberTitle','off');
+    scatter(NN(1:end-1), NN(2:end), '.');
+    grid on;
+    xlabel('NN(i) (ms)'); ylabel('NN(i+1) (ms)');
+    title('Poincaré Plot of NN intervals');
+end
+
+%% ================= HELPER FUNCTION ============================
+function hrv = compute_hrv_time(NN)
+% NN: RR intervals in ms
+    NN = NN(:);
+    hrv.AVNN  = mean(NN);
+    hrv.SDNN  = std(NN);
+    diffNN    = diff(NN);
+    hrv.RMSSD = sqrt(mean(diffNN.^2));
+    hrv.pNN50 = 100 * sum(abs(diffNN) > 50) / max(1,length(diffNN));
+end
