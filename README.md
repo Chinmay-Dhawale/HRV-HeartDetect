@@ -74,7 +74,7 @@
 
 ## 🧠 Block Diagram
 
-![Block Diagram](https://via.placeholder.com/900x300?text=ECG+Pipeline+Block+Diagram)
+![Block Diagram](meadia/block_diagram.png)
 
 
 ---
