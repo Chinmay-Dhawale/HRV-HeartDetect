@@ -80,7 +80,7 @@
 
 ## 🔄 Flow Diagram
 <p align="center">
-  <img src="media/flow.png" width="700" height="700">
+  <img src="media/flow.png" width="500" height="700">
 </p>
 ---
 
