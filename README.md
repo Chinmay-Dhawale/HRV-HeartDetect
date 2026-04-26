@@ -72,14 +72,16 @@
 
 ---
 
+
 ## 🧠 Block Diagram
-
-![Block Diagram](media/block_diagram.png)
-
+<p align="center">
+  <img src="media/block_diagram.png" width="700">
+</p>
 
 ## 🔄 Flow Diagram
-
-![ECG HRV Flow Diagram](media/flow.png)
+<p align="center">
+  <img src="media/flow.png" width="700">
+</p>
 ---
 
 ## 📊 Results
