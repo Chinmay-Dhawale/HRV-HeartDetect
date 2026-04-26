@@ -77,6 +77,9 @@
 ![Block Diagram](media/block_diagram.png)
 
 
+## 🔄 Flow Diagram
+
+![ECG HRV Flow Diagram](media/flow.png)
 ---
 
 ## 📊 Results
