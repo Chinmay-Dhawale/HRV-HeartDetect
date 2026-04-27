@@ -1,6 +1,6 @@
-# 🫀 Early Detection of Cardiovascular Diseases using HRV Patterns on ECG Signals
+#  Early Detection of Cardiovascular Diseases using HRV Patterns on ECG Signals
 
-## 📌 Introduction
+##  Introduction
 * Cardiovascular diseases (CVDs) are one of the leading causes of death worldwide.
 * Early detection is essential to reduce mortality and improve patient outcomes.
 * This project focuses on analyzing **Heart Rate Variability (HRV)** derived from **Electrocardiogram (ECG)** signals.
@@ -8,7 +8,7 @@
 
 ---
 
-## 📖 Overview
+## Overview
 * This project implements a **Digital Signal Processing (DSP)-based system**.
 * It processes ECG signals and extracts HRV features.
 * The system analyzes heart conditions and classifies them.
@@ -21,7 +21,7 @@
 
 ---
 
-## ⚙️ Methodology / Steps of Project
+##  Methodology / Steps of Project
 
 ### * Step 1: ECG Data Collection
 * ECG signals are collected from MIT-BIH Arrhythmia Database
@@ -73,18 +73,18 @@
 ---
 
 
-## 🧠 Block Diagram
+##  Block Diagram
 <p align="center">
   <img src="media/block_diagram.png" width="700">
 </p>
 
-## 🔄 Flow Diagram
+##  Flow Diagram
 <p align="center">
   <img src="media/flow.png" width="500" height="700">
 </p>
 ---
 
-## 📊 Results
+##  Results
 * Accurate R-peak detection achieved
 * Clear RR interval patterns observed
 * HRV features successfully extracted
@@ -93,7 +93,7 @@
   * Abnormal ECG
 
 
-## 📊 Results
+##  Results
 
 ### 🔹 Raw ECG Signal and Filtered ECG Signal
 <p align="center">
@@ -122,7 +122,7 @@
 
 ---
 
-## 🏁 Conclusion
+##  Conclusion
 * The project provides an effective method for early cardiovascular disease detection.
 * HRV-based ECG analysis is:
   * Reliable
@@ -137,7 +137,7 @@
 
 ---
 
-## 🔮 Future Scope
+##  Future Scope
 * Integration of Machine Learning and Deep Learning
 * Real-time monitoring using wearable devices
 * Cloud-based healthcare systems
@@ -147,14 +147,14 @@
 
 ---
 
-## 📚 References
+##  References
 * PhysioNet ECG Database
 * MIT-BIH Arrhythmia Database
 * Research papers on HRV analysis
 
 ---
 
-## 👨‍💻 Authors
+##  Authors
 * Prashant Pattar
 * Chinmay Dhawale
 * Rakshita K
@@ -162,7 +162,7 @@
 
 ---
 
-## 🛠️ Tools & Technologies
+##  Tools & Technologies
 * MATLAB / Python
 * NumPy, SciPy
 * Signal Processing Techniques
@@ -170,5 +170,5 @@
 
 ---
 
-## ⭐ Support
-* If you like this project, give it a ⭐ on GitHub!
+##  Support
+* If you like this project, give it a like on GitHub!
